@@ -1,4 +1,6 @@
 # CopenGL
 
 Compiled with TCC on Windows.
-Use MinGW "make all".
+Start "make.bat".
+
+## Thanks https://www.youtube.com/@SevaTurin!

@@ -1,1 +1,5 @@
-/build/
+/[Bb]uild/
+/[Bb]ackup/
+
+*.o
+*.exe
