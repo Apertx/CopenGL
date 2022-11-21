@@ -15,23 +15,33 @@
 
 float f = 0.4f;
 
-float textures[6][4][2] = {
-    X0, Y0, X1, Y0, X1, Y1, X0, Y1,
-    X1, Y0, X2, Y0, X2, Y1, X1, Y1,
-    X2, Y0, X3, Y0, X3, Y1, X2, Y1,
-    X0, Y1, X1, Y1, X1, Y2, X0, Y2,
-    X1, Y1, X2, Y1, X2, Y2, X1, Y2,
-    X2, Y1, X3, Y1, X3, Y2, X2, Y2,
-};
-
-float cube[6][4][3] = {
+GLfloat cube_vertices[72] = {
     -1, -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1,
     -1, -1, -1, -1, 1, -1, 1, 1, -1, 1, -1, -1,
     -1, -1, -1, 1, -1, -1, 1, -1, 1, -1, -1, 1,
     -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1, 1,
     -1, 1, -1, -1, 1, 1, 1, 1, 1, 1, 1, -1,
-    1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1,
+    1, -1, -1, 1, 1, -1, 1, 1, 1, 1, -1, 1
 };
+
+GLfloat cube_texcoords[48] = {
+    X0, Y0, X1, Y0, X1, Y1, X0, Y1,
+    X1, Y0, X2, Y0, X2, Y1, X1, Y1,
+    X2, Y0, X3, Y0, X3, Y1, X2, Y1,
+    X0, Y1, X1, Y1, X1, Y2, X0, Y2,
+    X1, Y1, X2, Y1, X2, Y2, X1, Y2,
+    X2, Y1, X3, Y1, X3, Y2, X2, Y2
+};
+
+GLubyte cube_elements[36] = {
+    0, 1, 2, 2, 3, 0,
+    4, 5, 6, 6, 7, 4,
+    8, 9, 10, 10, 11, 8,
+    12, 13, 14, 14, 15, 12,
+    16, 17, 18, 18, 19, 16,
+    20, 21, 22, 22, 23, 20
+};
+
 
 
 void myInit(void) {
@@ -39,24 +49,18 @@ void myInit(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
+    glEnable(GL_CULL_FACE);
 
     loadTexture("resources/tex01.bmp");
     loadTexture("resources/tex02.bmp");
     loadTexture("resources/tex03.bmp");
     loadTexture("resources/tex04.bmp");
 
-    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-    GLfloat mat_shininess[] = { 50.0 };
-    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-    glClearColor (0.0, 0.0, 0.0, 0.0);
-    glShadeModel (GL_SMOOTH);
-
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
+    glVertexPointer(3, GL_FLOAT, 0, cube_vertices);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glTexCoordPointer(2, GL_FLOAT, 0, cube_texcoords);
+    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
     glBindTexture(GL_TEXTURE_2D, 1);
     myResize(APP_WIDTH, APP_HEIGHT);
@@ -81,14 +85,7 @@ void myDraw(void) {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_TEXTURE_2D);
-    for (i = 0; i < 6; i++) {
-        glBegin(GL_QUADS);
-        for (j = 0; j < 4; j++) {
-            glTexCoord2f(textures[i][j][0], textures[i][j][1]);
-            glVertex3f(cube[i][j][0], cube[i][j][1], cube[i][j][2]);
-        }
-        glEnd();
-    }
+    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, cube_elements);
     glDisable(GL_TEXTURE_2D);
     glRotatef(f, 1.0, 1.0, 1.0);
 }

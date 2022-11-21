@@ -90,11 +90,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
     return 0;
   case WM_DESTROY:
     return 0;
-  case WM_KEYDOWN:
-    myKeyDown(wParam);
-    return 0;
-  case WM_KEYUP:
-    if (wParam == VK_F11) {
+  case WM_KEYDOWN:switch (wParam) {
+    case VK_F11:
       if (!is_fullscreen) {
         GetWindowPlacement(hWnd, &wpc);
         SetWindowLong(hWnd, GWL_STYLE, WS_POPUP);
@@ -102,14 +99,24 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
         ShowWindow(hWnd, SW_SHOWMAXIMIZED);
         is_fullscreen = TRUE;
       } else {
-        SetWindowLong(hWnd, GWL_STYLE,WS_OVERLAPPEDWINDOW | WS_VISIBLE);
+        SetWindowLong(hWnd, GWL_STYLE, WS_OVERLAPPEDWINDOW | WS_VISIBLE);
         SetWindowLong(hWnd, GWL_EXSTYLE, 0L);
         SetWindowPlacement(hWnd, &wpc);
         ShowWindow(hWnd, SW_SHOWDEFAULT);
         is_fullscreen = FALSE;
       }
-    } else
+      break;
+    default:
+      myKeyDown(wParam);
+    }
+    return 0;
+  case WM_KEYUP:
+    switch (wParam) {
+    case VK_F11:
+      break;
+    default:
       myKeyUp(wParam);
+    }
     return 0;
 
   default:
